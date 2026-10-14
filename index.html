@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Bernadette! 💖</title>
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --accent: #ff4d6d;
+            --text-color: #ffffff;
+            --text-muted: #b0b0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Main Container / Page Layout */
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            min-height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .message-card {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            display: none;
+            position: absolute;
+        }
+
+            .message-card.active {
+                opacity: 1;
+                transform: translateY(0);
+                display: block;
+            }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+            .btn:hover {
+                opacity: 0.9;
+                transform: scale(1.05);
+            }
+
+        /* Balloons Animation Container */
+        .balloon-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            display: none;
+            z-index: 5;
+        }
+
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 30px;
+            height: 40px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            animation: flyUp 6s linear infinite;
+        }
+
+        @keyframes flyUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-110vh) scale(1);
+                opacity: 0.7;
+            }
+        }
+
+        /* Gallery Grid View */
+        .gallery-page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            z-index: 15;
+            animation: fadeIn 1s ease;
+        }
+
+            .gallery-page.active {
+                display: flex;
+            }
+
+        .gallery-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        .photo-card {
+            background: #222;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+            aspect-ratio: 1;
+        }
+
+            .photo-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+            .photo-card .overlay-text {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                font-size: 0.85rem;
+                padding: 8px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .photo-card:hover .overlay-text {
+                opacity: 1;
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Balloons Layer -->
+    <div class="balloon-container" id="balloonContainer"></div>
+
+    <!-- Main Step-by-Step Flow Container -->
+    <div class="container" id="stepContainer">
+        <!-- Step 1 -->
+        <div class="message-card active" data-step="1">
+            <h1>Happy Birthday, Bernadette! 🎉</h1>
+            <p>A special surprise coded just for my amazing sister.</p>
+            <button class="btn" onclick="nextStep()">Open Your Gift</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="message-card" data-step="2">
+            <h1>It's Your Big Day! 🌟</h1>
+            <p>Wishing you a year filled with endless laughter, joy, and success.</p>
+            <button class="btn" onclick="nextStep()">Next</button>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="message-card" data-step="3">
+            <h1>Ready for your birthday surprise?</h1>
+            <p>Let's celebrate the best sister ever!</p>
+            <button class="btn" onclick="nextStep()">Let's Go</button>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="message-card" data-step="4">
+            <h1>The Stage is Set...</h1>
+            <button class="btn" onclick="nextStep(); startBalloons();">Turn on Lights 💡</button>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="message-card" data-step="5">
+            <h1>Let the party begin!</h1>
+            <button class="btn" onclick="nextStep()">Fly Balloons 🎈</button>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="message-card" data-step="6">
+            <h1>Almost there...</h1>
+            <button class="btn" onclick="revealMessage()">Read My Note 💌</button>
+        </div>
+
+        <!-- Step 7: Main Letter Card for Sister -->
+        <div class="message-card" id="mainMessageCard" data-step="7">
+            <h1>To My Dearest Sister, Bernadette,</h1>
+            <p>Having you as my sister is one of the greatest blessings in life. Thank you for all the memories, the continuous laughs, and for always being someone I can count on. I hope this new year of your life brings you everything you’ve been working for and so much more!</p>
+            <button class="btn" onclick="showGallery()">Sister Moments 📸</button>
+        </div>
+    </div>
+
+    <!-- Gallery View -->
+    <div class="gallery-page" id="galleryPage">
+        <div class="gallery-title">Memories Together</div>
+        <div class="photo-grid">
+            <div class="photo-card">
+                <img src="1000796798.jpg" alt="Bernadette Memory">
+                <div class="overlay-text">Best sister in the world 💫</div>
+            </div>
+            <div class="photo-card">
+                <img src="1000796797.jpg" alt="Bernadette Memory">
+                <div class="overlay-text">Partners in crime 👯‍♀️</div>
+            </div>
+            <div class="photo-card">
+                <img src="1000796799.jpg" alt="Bernadette Memory">
+                <div class="overlay-text">Always making us laugh 😂</div>
+            </div>
+            <div class="photo-card">
+                <img src="1000734097.jpg" alt="Bernadette Memory">
+                <div class="overlay-text">Growing up together 💖</div>
+            </div>
+            <div class="photo-card">
+                <img src="1000639613.jpg" alt="Bernadette Memory">
+                <div class="overlay-text">Unbreakable bond ✨</div>
+            </div>
+            <div class="photo-card">
+                <img src="1000639630.jpg" alt="Bernadette Memory">
+                <div class="overlay-text">Cheers to another great year! 🥂</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+                let currentStep = 1;
+
+                function nextStep() {
+                    const currentCard = document.querySelector(`.message-card[data-step="${currentStep}"]`);
+                    currentCard.classList.remove('active');
+
+                    currentStep++;
+                    const nextCard = document.querySelector(`.message-card[data-step="${currentStep}"]`);
+                    if (nextCard) {
+                        nextCard.classList.add('active');
+                    }
+                }
+
+                function startBalloons() {
+                    const container = document.getElementById('balloonContainer');
+                    container.style.display = 'block';
+                    const colors = ['#ff4d6d', '#ff758c', '#ff7eb3', '#7928ca', '#4facfe'];
+
+                    setInterval(() => {
+                        const balloon = document.createElement('div');
+                        balloon.classList.add('balloon');
+                        balloon.style.left = Math.random() * 100 + 'vw';
+                        balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                        container.appendChild(balloon);
+
+                        setTimeout(() => {
+                            balloon.remove();
+                        }, 7000);
+                    }, 400);
+                }
+
+                function revealMessage() {
+                    nextStep();
+                }
+
+                function showGallery() {
+                    document.getElementById('stepContainer').style.display = 'none';
+                    document.getElementById('galleryPage').classList.add('active');
+                }
+    </script>
+</body>
+</html>
