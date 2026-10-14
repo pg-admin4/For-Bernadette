@@ -31,12 +31,50 @@
             position: relative;
         }
 
+        /* Confetti & Balloons Canvas Layers */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 25;
+            display: none;
+        }
+
+        .balloon-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            display: none;
+            z-index: 5;
+        }
+
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 30px;
+            height: 40px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            animation: flyUp 6s linear infinite;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-110vh) scale(1); opacity: 0.7; }
+        }
+
         /* Main Container / Page Layout */
         .container {
             position: relative;
             width: 100%;
             max-width: 600px;
-            min-height: 350px;
+            min-height: 380px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -48,7 +86,7 @@
             background-color: var(--card-bg);
             border: 1px solid #333;
             border-radius: 16px;
-            padding: 30px;
+            padding: 35px 30px;
             width: 100%;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -63,6 +101,15 @@
             opacity: 1;
             transform: translateY(0);
             display: block;
+        }
+
+        .step-indicator {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-weight: 600;
         }
 
         h1 {
@@ -97,49 +144,18 @@
             transform: scale(1.05);
         }
 
-        /* Balloons Animation Container */
-        .balloon-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            overflow: hidden;
-            display: none;
-            z-index: 5;
-        }
-
-        .balloon {
-            position: absolute;
-            bottom: -100px;
-            width: 30px;
-            height: 40px;
-            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-            animation: flyUp 6s linear infinite;
-        }
-
-        @keyframes flyUp {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-110vh) scale(1);
-                opacity: 0.7;
-            }
-        }
-
         /* Gallery Grid View */
         .gallery-page {
             display: none;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             padding: 20px;
             z-index: 15;
             animation: fadeIn 1s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .gallery-page.active {
@@ -169,6 +185,12 @@
             text-align: center;
             position: relative;
             aspect-ratio: 1;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.03);
         }
 
         .photo-card img {
@@ -183,7 +205,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             color: white;
             font-size: 0.85rem;
             padding: 8px;
@@ -193,6 +215,33 @@
 
         .photo-card:hover .overlay-text {
             opacity: 1;
+        }
+
+        /* Lightbox Modal for Zooming Photos */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(255, 77, 109, 0.3);
         }
 
         @keyframes fadeIn {
@@ -209,13 +258,20 @@
 </head>
 <body>
 
-    <!-- Floating Balloons Layer -->
+    <!-- Confetti & Balloons Layers -->
+    <canvas id="confetti-canvas"></canvas>
     <div class="balloon-container" id="balloonContainer"></div>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Enlarged Memory">
+    </div>
 
     <!-- Main Step-by-Step Flow Container -->
     <div class="container" id="stepContainer">
         <!-- Step 1 -->
         <div class="message-card active" data-step="1">
+            <div class="step-indicator">Step 1 of 7</div>
             <h1>Happy Birthday, Bernadette! 🎉</h1>
             <p>A special surprise coded just for my amazing sister.</p>
             <button class="btn" onclick="nextStep()">Open Your Gift</button>
@@ -223,6 +279,7 @@
 
         <!-- Step 2 -->
         <div class="message-card" data-step="2">
+            <div class="step-indicator">Step 2 of 7</div>
             <h1>It's Your Big Day! 🌟</h1>
             <p>Wishing you a year filled with endless laughter, joy, and success.</p>
             <button class="btn" onclick="nextStep()">Next</button>
@@ -230,6 +287,7 @@
 
         <!-- Step 3 -->
         <div class="message-card" data-step="3">
+            <div class="step-indicator">Step 3 of 7</div>
             <h1>Ready for your birthday surprise?</h1>
             <p>Let's celebrate the best sister ever!</p>
             <button class="btn" onclick="nextStep()">Let's Go</button>
@@ -237,48 +295,60 @@
 
         <!-- Step 4 -->
         <div class="message-card" data-step="4">
+            <div class="step-indicator">Step 4 of 7</div>
             <h1>The Stage is Set...</h1>
             <button class="btn" onclick="nextStep(); startBalloons();">Turn on Lights 💡</button>
         </div>
 
         <!-- Step 5 -->
         <div class="message-card" data-step="5">
+            <div class="step-indicator">Step 5 of 7</div>
             <h1>Let the party begin!</h1>
             <button class="btn" onclick="nextStep()">Fly Balloons 🎈</button>
         </div>
 
         <!-- Step 6 -->
         <div class="message-card" data-step="6">
+            <div class="step-indicator">Step 6 of 7</div>
             <h1>Almost there...</h1>
-            <button class="btn" onclick="revealMessage()">Read My Note 💌</button>
+            <button class="btn" onclick="revealMessage(); triggerConfetti();">Read My Note 💌</button>
         </div>
 
         <!-- Step 7: Main Letter Card for Sister -->
         <div class="message-card" id="mainMessageCard" data-step="7">
+            <div class="step-indicator">Step 7 of 7</div>
             <h1>To My Dearest Sister, Bernadette,</h1>
             <p>Having you as my sister is one of the greatest blessings in life. Thank you for all the memories, the continuous laughs, and for always being someone I can count on. I hope this new year of your life brings you everything you’ve been working for and so much more!</p>
-            <button class="btn" onclick="showGallery()">Moments 📸</button>
+            <button class="btn" onclick="showGallery()">View Memories 📸</button>
         </div>
     </div>
 
-    <!-- Gallery View with your exact image filenames -->
+    <!-- Gallery View with all 6 of your photos -->
     <div class="gallery-page" id="galleryPage">
-        <div class="gallery-title">Memories</div>
+        <div class="gallery-title">Memories Together</div>
         <div class="photo-grid">
-            <div class="photo-card">
-                <img src="photo3.jpg" alt="Bernadette Photo 1">
+            <div class="photo-card" onclick="openLightbox('1000796798.jpg')">
+                <img src="1000796798.jpg" alt="Bernadette Photo 1">
                 <div class="overlay-text">Best sister in the world 💫</div>
             </div>
-            <div class="photo-card">
-                <img src="photo4.jpg" alt="Bernadette Photo 4">
+            <div class="photo-card" onclick="openLightbox('1000796797.jpg')">
+                <img src="1000796797.jpg" alt="Bernadette Photo 2">
+                <div class="overlay-text">Partners in crime 👯‍♀️</div>
+            </div>
+            <div class="photo-card" onclick="openLightbox('1000796799.jpg')">
+                <img src="1000796799.jpg" alt="Bernadette Photo 3">
+                <div class="overlay-text">Always making us laugh 😂</div>
+            </div>
+            <div class="photo-card" onclick="openLightbox('1000734097.jpg')">
+                <img src="1000734097.jpg" alt="Bernadette Photo 4">
                 <div class="overlay-text">Growing up together 💖</div>
             </div>
-            <div class="photo-card">
-                <img src="photo5.jpg" alt="Bernadette Photo 5">
+            <div class="photo-card" onclick="openLightbox('1000639613.jpg')">
+                <img src="1000639613.jpg" alt="Bernadette Photo 5">
                 <div class="overlay-text">Unbreakable bond ✨</div>
             </div>
-            <div class="photo-card">
-                <img src="photo6.jpg" alt="Bernadette Photo 6">
+            <div class="photo-card" onclick="openLightbox('1000639630.jpg')">
+                <img src="1000639630.jpg" alt="Bernadette Photo 6">
                 <div class="overlay-text">Cheers to another great year! 🥂</div>
             </div>
         </div>
@@ -324,6 +394,69 @@
         function showGallery() {
             document.getElementById('stepContainer').style.display = 'none';
             document.getElementById('galleryPage').classList.add('active');
+        }
+
+        /* Lightbox Functions */
+        function openLightbox(imgSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imgSrc;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        /* Confetti Effect */
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            const colors = ['#ff4d6d', '#ff758c', '#ffd166', '#06d6a0', '#118ab2', '#7928ca'];
+
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.7) * 12,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 0,
+                    maxLife: Math.random() * 100 + 80
+                });
+            }
+
+            function updateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, index) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.3; // gravity
+                    p.life++;
+
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    if (p.life >= p.maxLife) {
+                        particles.splice(index, 1);
+                    }
+                });
+
+                if (particles.length > 0) {
+                    requestAnimationFrame(updateConfetti);
+                } else {
+                    canvas.style.display = 'none';
+                }
+            }
+            updateConfetti();
         }
     </script>
 </body>
