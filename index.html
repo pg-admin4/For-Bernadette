@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -59,11 +59,11 @@
             position: absolute;
         }
 
-            .message-card.active {
-                opacity: 1;
-                transform: translateY(0);
-                display: block;
-            }
+        .message-card.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
 
         h1 {
             font-size: 1.8rem;
@@ -92,10 +92,10 @@
             letter-spacing: 1px;
         }
 
-            .btn:hover {
-                opacity: 0.9;
-                transform: scale(1.05);
-            }
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
 
         /* Balloons Animation Container */
         .balloon-container {
@@ -124,7 +124,6 @@
                 transform: translateY(0) scale(1);
                 opacity: 1;
             }
-
             100% {
                 transform: translateY(-110vh) scale(1);
                 opacity: 0.7;
@@ -143,9 +142,9 @@
             animation: fadeIn 1s ease;
         }
 
-            .gallery-page.active {
-                display: flex;
-            }
+        .gallery-page.active {
+            display: flex;
+        }
 
         .gallery-title {
             font-size: 1.8rem;
@@ -172,38 +171,33 @@
             aspect-ratio: 1;
         }
 
-            .photo-card img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-            }
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-            .photo-card .overlay-text {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                color: white;
-                font-size: 0.85rem;
-                padding: 8px;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
+        .photo-card .overlay-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.85rem;
+            padding: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-            .photo-card:hover .overlay-text {
-                opacity: 1;
-            }
+        .photo-card:hover .overlay-text {
+            opacity: 1;
+        }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @media(max-width: 600px) {
@@ -267,78 +261,78 @@
         </div>
     </div>
 
-    <!-- Gallery View -->
+    <!-- Gallery View with your exact image filenames -->
     <div class="gallery-page" id="galleryPage">
         <div class="gallery-title">Memories Together</div>
         <div class="photo-grid">
             <div class="photo-card">
-                <img src="1000796798.jpg" alt="Bernadette Memory">
+                <img src="1000796798.jpg" alt="Bernadette Photo 1">
                 <div class="overlay-text">Best sister in the world 💫</div>
             </div>
             <div class="photo-card">
-                <img src="1000796797.jpg" alt="Bernadette Memory">
+                <img src="1000796797.jpg" alt="Bernadette Photo 2">
                 <div class="overlay-text">Partners in crime 👯‍♀️</div>
             </div>
             <div class="photo-card">
-                <img src="1000796799.jpg" alt="Bernadette Memory">
+                <img src="1000796799.jpg" alt="Bernadette Photo 3">
                 <div class="overlay-text">Always making us laugh 😂</div>
             </div>
             <div class="photo-card">
-                <img src="1000734097.jpg" alt="Bernadette Memory">
+                <img src="1000734097.jpg" alt="Bernadette Photo 4">
                 <div class="overlay-text">Growing up together 💖</div>
             </div>
             <div class="photo-card">
-                <img src="1000639613.jpg" alt="Bernadette Memory">
+                <img src="1000639613.jpg" alt="Bernadette Photo 5">
                 <div class="overlay-text">Unbreakable bond ✨</div>
             </div>
             <div class="photo-card">
-                <img src="1000639630.jpg" alt="Bernadette Memory">
+                <img src="1000639630.jpg" alt="Bernadette Photo 6">
                 <div class="overlay-text">Cheers to another great year! 🥂</div>
             </div>
         </div>
     </div>
 
     <script>
-                let currentStep = 1;
+        let currentStep = 1;
 
-                function nextStep() {
-                    const currentCard = document.querySelector(`.message-card[data-step="${currentStep}"]`);
-                    currentCard.classList.remove('active');
+        function nextStep() {
+            const currentCard = document.querySelector(`.message-card[data-step="${currentStep}"]`);
+            currentCard.classList.remove('active');
+            
+            currentStep++;
+            const nextCard = document.querySelector(`.message-card[data-step="${currentStep}"]`);
+            if (nextCard) {
+                nextCard.classList.add('active');
+            }
+        }
 
-                    currentStep++;
-                    const nextCard = document.querySelector(`.message-card[data-step="${currentStep}"]`);
-                    if (nextCard) {
-                        nextCard.classList.add('active');
-                    }
-                }
+        function startBalloons() {
+            const container = document.getElementById('balloonContainer');
+            container.style.display = 'block';
+            const colors = ['#ff4d6d', '#ff758c', '#ff7eb3', '#7928ca', '#4facfe'];
 
-                function startBalloons() {
-                    const container = document.getElementById('balloonContainer');
-                    container.style.display = 'block';
-                    const colors = ['#ff4d6d', '#ff758c', '#ff7eb3', '#7928ca', '#4facfe'];
+            setInterval(() => {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+                balloon.style.left = Math.random() * 100 + 'vw';
+                balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(balloon);
 
-                    setInterval(() => {
-                        const balloon = document.createElement('div');
-                        balloon.classList.add('balloon');
-                        balloon.style.left = Math.random() * 100 + 'vw';
-                        balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                        balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
-                        container.appendChild(balloon);
+                setTimeout(() => {
+                    balloon.remove();
+                }, 7000);
+            }, 400);
+        }
 
-                        setTimeout(() => {
-                            balloon.remove();
-                        }, 7000);
-                    }, 400);
-                }
+        function revealMessage() {
+            nextStep();
+        }
 
-                function revealMessage() {
-                    nextStep();
-                }
-
-                function showGallery() {
-                    document.getElementById('stepContainer').style.display = 'none';
-                    document.getElementById('galleryPage').classList.add('active');
-                }
+        function showGallery() {
+            document.getElementById('stepContainer').style.display = 'none';
+            document.getElementById('galleryPage').classList.add('active');
+        }
     </script>
 </body>
 </html>
